@@ -13,7 +13,7 @@ class MMWORLD_API AInteractiveTargetActor
 public:
 	AInteractiveTargetActor();
 
-	virtual void SwitchTurned_Implementation(bool bNewOnOrOff, int32 CustomParam);
+	virtual void SwitchTurned_Implementation(bool bNewOnOrOff, int32 CustomParam) override;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Interactive)
 	void SwitchAllTurnedOnOrOff(bool bOnOrOff);
