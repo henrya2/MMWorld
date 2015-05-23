@@ -36,6 +36,8 @@ public:
 protected:
 	void ToggleThirdPerson();
 
+	void ToggleBackpack();
+
 	void OnStartUse();
 	void OnStopUse();
 
@@ -76,6 +78,21 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCamera; }
 
+	virtual void BeginPlay();
+
+	virtual void BeginDestroy() override;
+
+	bool InGameUIMode() const { return bInGameUIMode; }
+	void SetInUIMode(bool bNewInUIMode) { bInGameUIMode = bNewInUIMode; }
+	void SetupGameUIInputComponent(class UInputComponent* InputComponent);
+	void CreateAndInitGameUIInputComponent();
+	virtual void DestroyPlayerInputComponent() override;
+
+	virtual void PawnClientRestart() override;
+public:
+	UPROPERTY()
+	class UInputComponent* GameUIInputComponent;
+
 protected:
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -95,6 +112,16 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory)
 	TArray<TWeakObjectPtr<class AInventoryItem>> InventoryItems;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Inventory)
+	TSubclassOf<class UInventoryUI> InventoryUIClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory)
+	class UInventoryUI* InventoryUI;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = UI)
+	bool bInGameUIMode;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = View)

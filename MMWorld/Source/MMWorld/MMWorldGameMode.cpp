@@ -4,6 +4,7 @@
 #include "MMWorldGameMode.h"
 #include "MMWorldHUD.h"
 #include "MMWorldCharacter.h"
+#include "MMWorldPlayerController.h"
 
 AMMWorldGameMode::AMMWorldGameMode(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -16,4 +17,6 @@ AMMWorldGameMode::AMMWorldGameMode(const FObjectInitializer& ObjectInitializer)
 
 	// use our custom HUD class
 	HUDClass = HUDClassFinder.Class;
+
+	PlayerControllerClass = AMMWorldPlayerController::StaticClass();
 }

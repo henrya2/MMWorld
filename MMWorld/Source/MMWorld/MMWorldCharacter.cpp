@@ -4,8 +4,10 @@
 #include "MMWorldCharacter.h"
 #include "InteractivebleActor.h"
 #include "InventoryItem.h"
+#include "InventoryUI.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
+#include "Engine/InputDelegateBinding.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -53,6 +55,11 @@ AMMWorldCharacter::AMMWorldCharacter(const FObjectInitializer& ObjectInitializer
 	PrimaryActorTick.bCanEverTick = true;
 
 	bIsFirstPersonPerspective = true;
+
+	InventoryUIClass = nullptr;
+	InventoryUI = nullptr;
+
+	bInGameUIMode = false;
 }
 
 void AMMWorldCharacter::PostInitializeComponents()
@@ -60,6 +67,51 @@ void AMMWorldCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	FirstPersonCamera->AttachTo(GetMesh(), TEXT("CameraEyePoint"));
+}
+
+void AMMWorldCharacter::SetupGameUIInputComponent(class UInputComponent* InputComponent)
+{
+	InputComponent->BindAction("Backpack", IE_Pressed, this, &AMMWorldCharacter::ToggleBackpack);
+}
+
+void AMMWorldCharacter::CreateAndInitGameUIInputComponent()
+{
+	if (GameUIInputComponent == NULL)
+	{
+		GameUIInputComponent = ConstructObject<UInputComponent>(UInputComponent::StaticClass(), this, TEXT("GameUIInputComponent"));
+		if (GameUIInputComponent)
+		{
+			SetupGameUIInputComponent(GameUIInputComponent);
+			GameUIInputComponent->RegisterComponent();
+			UBlueprintGeneratedClass* BGClass = Cast<UBlueprintGeneratedClass>(GetClass());
+			if (BGClass != NULL)
+			{
+				GameUIInputComponent->bBlockInput = bBlockInput;
+				UInputDelegateBinding::BindInputDelegates(BGClass, GameUIInputComponent);
+			}
+		}
+	}
+}
+
+void AMMWorldCharacter::DestroyPlayerInputComponent()
+{
+	Super::DestroyPlayerInputComponent();
+
+	if (GameUIInputComponent)
+	{
+		GameUIInputComponent->DestroyComponent();
+		GameUIInputComponent = nullptr;
+	}
+}
+
+void AMMWorldCharacter::PawnClientRestart()
+{
+	Super::PawnClientRestart();
+
+	if (IsLocallyControlled())
+	{
+		CreateAndInitGameUIInputComponent();
+	}
 }
 
 void AMMWorldCharacter::SetFirstPersonPerspective(bool bNewFirstPersonPerspective)
@@ -101,7 +153,7 @@ void AMMWorldCharacter::SetupPlayerInputComponent(class UInputComponent* InputCo
 	InputComponent->BindAction("PrimaryAction", IE_Released, this, &AMMWorldCharacter::OnStopPrimaryAction);
 	InputComponent->BindAction("SecondaryAction", IE_Pressed, this, &AMMWorldCharacter::OnStartSecondaryAction);
 	InputComponent->BindAction("SecondaryAction", IE_Released, this, &AMMWorldCharacter::OnStopSecondaryAction);
-	
+
 	InputComponent->BindAxis("MoveForward", this, &AMMWorldCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &AMMWorldCharacter::MoveRight);
 	
@@ -117,6 +169,15 @@ void AMMWorldCharacter::SetupPlayerInputComponent(class UInputComponent* InputCo
 void AMMWorldCharacter::ToggleThirdPerson()
 {
 	SetFirstPersonPerspective(!GetIsFirstPersonPerspective());
+}
+
+void AMMWorldCharacter::ToggleBackpack()
+{
+	if (InventoryUI)
+	{
+		InventoryUI->SetVisibility(InventoryUI->GetVisibility() == ESlateVisibility::Hidden ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Hidden);
+		SetInUIMode(InventoryUI->GetVisibility() != ESlateVisibility::Hidden);
+	}
 }
 
 void AMMWorldCharacter::OnStartUse()
@@ -211,4 +272,40 @@ void AMMWorldCharacter::LeaveAnItemInInventory(class AInventoryItem* InventoryIt
 {
 	InventoryItem->LeaveInventory();
 	RemoveAnItemInInventory(InventoryItem);
+}
+
+void AMMWorldCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (IsLocallyControlled())
+	{
+		if (InventoryUI)
+		{
+			InventoryUI->RemoveFromParent();
+			InventoryUI = nullptr;
+		}
+
+		if (InventoryUIClass)
+		{
+			APlayerController* PlayerController = Cast<APlayerController>(GetController());
+			InventoryUI = CreateWidget<UInventoryUI>(PlayerController, InventoryUIClass);
+			if (InventoryUI)
+			{
+				InventoryUI->SetVisibility(ESlateVisibility::Hidden);
+				InventoryUI->AddToViewport(1);
+			}
+		}
+	}
+}
+
+void AMMWorldCharacter::BeginDestroy()
+{
+	if (InventoryUI)
+	{
+		InventoryUI->RemoveFromParent();
+		InventoryUI = nullptr;
+	}
+
+	Super::BeginDestroy();
 }

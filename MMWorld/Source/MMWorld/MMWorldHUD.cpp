@@ -6,7 +6,8 @@
 #include "TextureResource.h"
 #include "CanvasItem.h"
 
-AMMWorldHUD::AMMWorldHUD(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+AMMWorldHUD::AMMWorldHUD(const FObjectInitializer& ObjectInitializer) 
+	: Super(ObjectInitializer)
 {
 	CrosshairTex = nullptr;
 }
@@ -32,4 +33,3 @@ void AMMWorldHUD::DrawHUD()
 		Canvas->DrawItem(TileItem);
 	}
 }
-
