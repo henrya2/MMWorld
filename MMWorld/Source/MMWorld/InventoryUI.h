@@ -19,6 +19,12 @@ public:
 
 	virtual void OnWidgetRebuilt() override;
 
+	void ShowUI(bool NewVisilbe);
+	bool IsUIVisible() const;
+
 protected:
 	class UScrollBox* ItemsListBox;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UItemListChildUI> ItemListChildUIClass;
 };

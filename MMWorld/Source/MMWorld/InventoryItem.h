@@ -19,6 +19,8 @@ public:
 
 	bool IsInInventory() const { return false; }
 
+	const FString& GetItemName() const { return ItemName; }
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
@@ -33,7 +35,7 @@ public:
 	virtual void OnStartUse_Implementation();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FString ItemName;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

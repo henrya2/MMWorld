@@ -175,8 +175,8 @@ void AMMWorldCharacter::ToggleBackpack()
 {
 	if (InventoryUI)
 	{
-		InventoryUI->SetVisibility(InventoryUI->GetVisibility() == ESlateVisibility::Hidden ? ESlateVisibility::SelfHitTestInvisible : ESlateVisibility::Hidden);
-		SetInUIMode(InventoryUI->GetVisibility() != ESlateVisibility::Hidden);
+		InventoryUI->ShowUI(!InventoryUI->IsUIVisible());
+		SetInUIMode(InventoryUI->IsUIVisible());
 	}
 }
 
