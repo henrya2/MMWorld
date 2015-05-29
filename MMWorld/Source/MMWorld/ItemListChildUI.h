@@ -19,6 +19,10 @@ public:
 
 	void SetItemName(const FString& NameString);
 
+	UFUNCTION()
+	void OnClickedBackButton();
+
 protected:
 	class UTextBlock* ItemNameText;
+	class UButton* BackButton;
 };

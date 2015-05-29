@@ -60,6 +60,23 @@ void UInventoryUI::ShowUI(bool NewVisilbe)
 				}
 			}
 		}
+
+		{
+			APlayerController* PlayerController = GetPlayerContext().GetPlayerController();
+
+			if (PlayerController)
+			{
+				if (NewVisilbe)
+				{
+					PlayerController->bShowMouseCursor = true;
+				}
+				else
+				{
+					PlayerController->bShowMouseCursor = false;
+				}
+			}
+		}
+
 	}
 }
 
