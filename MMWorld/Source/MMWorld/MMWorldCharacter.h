@@ -33,6 +33,10 @@ public:
 
 	const TArray<TWeakObjectPtr<class AInventoryItem>>& GetInventoryItems() { return InventoryItems; }
 
+	USceneComponent* GetItemsDummyNode() const { return ItemsDummyNode; }
+	void BindToItemsDummyNode(class AInventoryItem* InventoryItem);
+	void UnbindToItemsDummyNode(class AInventoryItem* InventoryItem);
+
 protected:
 	void ToggleThirdPerson();
 
@@ -105,6 +109,9 @@ protected:
 	/** an arm for the third person camera */
 	UPROPERTY(VisibleDefaultsOnly, Category = Camera)
 	class USpringArmComponent* ThirdPersonCameraArm;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class USceneComponent* ItemsDummyNode;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interactive)

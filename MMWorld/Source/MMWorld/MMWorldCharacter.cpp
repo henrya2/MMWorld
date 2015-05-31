@@ -52,6 +52,9 @@ AMMWorldCharacter::AMMWorldCharacter(const FObjectInitializer& ObjectInitializer
 	ThirdPersonCamera->bAutoActivate = false;
 	ThirdPersonCamera->bIsActive = false;
 
+	ItemsDummyNode = CreateDefaultSubobject<USceneComponent>(TEXT("ItemsDummyNode"));
+	ItemsDummyNode->AttachParent = RootComponent;
+
 	PrimaryActorTick.bCanEverTick = true;
 
 	bIsFirstPersonPerspective = true;
@@ -270,8 +273,18 @@ void AMMWorldCharacter::RemoveAnItemInInventory(class AInventoryItem* InventoryI
 
 void AMMWorldCharacter::LeaveAnItemInInventory(class AInventoryItem* InventoryItem)
 {
-	InventoryItem->LeaveInventory();
+	InventoryItem->LeaveInventory(this);
 	RemoveAnItemInInventory(InventoryItem);
+}
+
+void AMMWorldCharacter::BindToItemsDummyNode(class AInventoryItem* InventoryItem)
+{
+	InventoryItem->GetRootComponent()->AttachTo(GetItemsDummyNode());
+}
+
+void AMMWorldCharacter::UnbindToItemsDummyNode(class AInventoryItem* InventoryItem)
+{
+	InventoryItem->GetRootComponent()->DetachFromParent();
 }
 
 void AMMWorldCharacter::BeginPlay()

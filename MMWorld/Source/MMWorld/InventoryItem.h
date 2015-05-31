@@ -14,8 +14,8 @@ public:
 	// Sets default values for this actor's properties
 	AInventoryItem();
 
-	void EnterInventory(APawn* NewOwningPawn);
-	void LeaveInventory();
+	void EnterInventory(class AMMWorldCharacter* NewOwningPawn);
+	void LeaveInventory(class AMMWorldCharacter* NewOwningPawn);
 
 	bool IsInInventory() const { return false; }
 
@@ -40,4 +40,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* PickupTrigger;
+
+	TMap<void*, bool> PhysicsEnableStates;
 };

@@ -25,38 +25,25 @@ void AInventoryItem::Tick( float DeltaTime )
 
 }
 
-void AInventoryItem::EnterInventory(APawn* NewOwningPawn)
+void AInventoryItem::EnterInventory(class AMMWorldCharacter* NewOwningPawn)
 {
-	auto MeshComponets = GetComponentsByClass(UMeshComponent::StaticClass());
-
-	for (int32 i = 0; i < MeshComponets.Num(); ++i)
-	{
-		UMeshComponent* MeshComp = Cast<UMeshComponent>(MeshComponets[i]);
-		if (MeshComp)
-		{
-			MeshComp->SetHiddenInGame(true);
-		}
-	}
-
 	ActiveTrigger->SetActive(false);
 	SetOwner(NewOwningPawn);
+
+	GetRootComponent()->SetHiddenInGame(true, true);
+
+	NewOwningPawn->BindToItemsDummyNode(this);
+	GetRootComponent()->SetRelativeTransform(FTransform::Identity);
 }
 
-void AInventoryItem::LeaveInventory()
+void AInventoryItem::LeaveInventory(class AMMWorldCharacter* NewOwningPawn)
 {
-	auto MeshComponets = GetComponentsByClass(UMeshComponent::StaticClass());
-
-	for (int32 i = 0; i < MeshComponets.Num(); ++i)
-	{
-		UMeshComponent* MeshComp = Cast<UMeshComponent>(MeshComponets[i]);
-		if (MeshComp)
-		{
-			MeshComp->SetHiddenInGame(false);
-		}
-	}
-
 	ActiveTrigger->SetActive(true);
 	SetOwner(nullptr);
+
+	GetRootComponent()->SetHiddenInGame(false, true);
+
+	NewOwningPawn->UnbindToItemsDummyNode(this);
 }
 
 void AInventoryItem::OnStartUse_Implementation()
