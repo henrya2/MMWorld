@@ -40,6 +40,4 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* PickupTrigger;
-
-	TMap<void*, bool> PhysicsEnableStates;
 };
