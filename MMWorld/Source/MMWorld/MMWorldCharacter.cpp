@@ -62,6 +62,8 @@ AMMWorldCharacter::AMMWorldCharacter(const FObjectInitializer& ObjectInitializer
 	InventoryUIClass = nullptr;
 	InventoryUI = nullptr;
 
+	EquipedItem = nullptr;
+
 	bInGameUIMode = false;
 }
 
@@ -257,6 +259,7 @@ void AMMWorldCharacter::SetActiveInteractivebleActor(class AInteractivebleActor*
 void AMMWorldCharacter::PickupItem(class AInventoryItem* InventoryItem)
 {
 	PutItemIntoInventory(InventoryItem);
+	ActiveInteractivebleActor = nullptr;
 	InventoryItem->EnterInventory(this);
 }
 
@@ -285,6 +288,32 @@ void AMMWorldCharacter::BindToItemsDummyNode(class AInventoryItem* InventoryItem
 void AMMWorldCharacter::UnbindToItemsDummyNode(class AInventoryItem* InventoryItem)
 {
 	InventoryItem->GetRootComponent()->DetachFromParent();
+}
+
+void AMMWorldCharacter::EquipItem(class AInventoryItem* InventoryItem)
+{
+	if (EquipedItem != InventoryItem)
+	{
+		if (EquipedItem.IsValid())
+		{
+			EquipedItem->Unequip();
+		}
+
+		InventoryItem->Equip();
+	}
+}
+
+void AMMWorldCharacter::UnequipItem(class AInventoryItem* InventoryItem)
+{
+	if (InventoryItem == EquipedItem.Get())
+	{
+		InventoryItem->Unequip();
+	}
+}
+
+void AMMWorldCharacter::BindToEquipItemPoint(class AInventoryItem* InventoryItem)
+{
+	InventoryItem->AttachRootComponentTo(GetMesh(), TEXT("ItemHoldPointRight"));
 }
 
 void AMMWorldCharacter::BeginPlay()

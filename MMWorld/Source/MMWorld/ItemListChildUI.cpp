@@ -2,6 +2,8 @@
 
 #include "MMWorld.h"
 #include "ItemListChildUI.h"
+#include "InventoryItem.h"
+#include "MMWorldCharacter.h"
 #include "Components/PanelWidget.h"
 #include "Components/ContentWidget.h"
 #include "Components/TextBlock.h"
@@ -11,6 +13,7 @@ UItemListChildUI::UItemListChildUI()
 	: Super(FObjectInitializer::Get())
 {
 	ItemNameText = nullptr;
+	InventoryItem = nullptr;
 }
 
 void UItemListChildUI::OnWidgetRebuilt()
@@ -34,7 +37,19 @@ void UItemListChildUI::SetItemName(const FString& NameString)
 	}
 }
 
+void UItemListChildUI::SetInventoryItem(AInventoryItem* NewInventoryItem)
+{
+	InventoryItem = NewInventoryItem;
+}
+
 void UItemListChildUI::OnClickedBackButton()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, TEXT("OnClickedBackButton"));
+	if (InventoryItem.IsValid())
+	{
+		AMMWorldCharacter* PlayerCharacter = GetPlayerContext().GetPawn<AMMWorldCharacter>();
+		if (PlayerCharacter)
+		{
+			PlayerCharacter->EquipItem(InventoryItem.Get());
+		}
+	}
 }

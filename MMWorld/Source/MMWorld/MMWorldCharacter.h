@@ -6,7 +6,7 @@
 class UInputComponent;
 
 UCLASS(config=Game)
-class AMMWorldCharacter : public ACharacter
+class MMWORLD_API AMMWorldCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -36,6 +36,11 @@ public:
 	USceneComponent* GetItemsDummyNode() const { return ItemsDummyNode; }
 	void BindToItemsDummyNode(class AInventoryItem* InventoryItem);
 	void UnbindToItemsDummyNode(class AInventoryItem* InventoryItem);
+
+	void EquipItem(class AInventoryItem* InventoryItem);
+	void UnequipItem(class AInventoryItem* InventoryItem);
+
+	void BindToEquipItemPoint(class AInventoryItem* InventoryItem);
 
 protected:
 	void ToggleThirdPerson();
@@ -119,6 +124,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory)
 	TArray<TWeakObjectPtr<class AInventoryItem>> InventoryItems;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory)
+	TWeakObjectPtr<class AInventoryItem> EquipedItem;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Inventory)

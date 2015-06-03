@@ -5,7 +5,7 @@
 
 AMeleeWeapon::AMeleeWeapon()
 {
-
+	bCanBeEquiped = true;
 }
 
 void AMeleeWeapon::OnStartPrimaryAction()

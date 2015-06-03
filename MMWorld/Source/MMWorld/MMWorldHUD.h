@@ -4,7 +4,7 @@
 #include "MMWorldHUD.generated.h"
 
 UCLASS()
-class AMMWorldHUD : public AHUD
+class MMWORLD_API AMMWorldHUD : public AHUD
 {
 	GENERATED_BODY()
 

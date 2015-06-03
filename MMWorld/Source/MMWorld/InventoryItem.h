@@ -34,10 +34,19 @@ public:
 
 	virtual void OnStartUse_Implementation();
 
+	void Equip();
+	void Unequip();
+
+	virtual void OnEquip() {}
+	virtual void OnUnequip() {}
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FString ItemName;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* PickupTrigger;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bCanBeEquiped;
 };

@@ -56,6 +56,7 @@ void UInventoryUI::ShowUI(bool NewVisilbe)
 					{
 						ItemsListBox->AddChild(ItemListChild);
 						ItemListChild->SetItemName(PlayerInventoryItems[i]->GetItemName());
+						ItemListChild->SetInventoryItem(PlayerInventoryItems[i].Get());
 					}
 				}
 			}

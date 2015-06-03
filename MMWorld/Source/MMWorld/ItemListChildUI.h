@@ -5,6 +5,8 @@
 #include "Blueprint/UserWidget.h"
 #include "ItemListChildUI.generated.h"
 
+class AInventoryItem;
+
 /**
  * 
  */
@@ -22,7 +24,11 @@ public:
 	UFUNCTION()
 	void OnClickedBackButton();
 
+	void SetInventoryItem(AInventoryItem* NewInventoryItem);
+
 protected:
 	class UTextBlock* ItemNameText;
 	class UButton* BackButton;
+
+	TWeakObjectPtr<AInventoryItem> InventoryItem;
 };

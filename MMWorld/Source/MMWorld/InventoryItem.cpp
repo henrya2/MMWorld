@@ -9,6 +9,7 @@ AInventoryItem::AInventoryItem()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bCanBeEquiped = false;
 }
 
 // Called when the game starts or when spawned
@@ -28,17 +29,21 @@ void AInventoryItem::Tick( float DeltaTime )
 void AInventoryItem::EnterInventory(class AMMWorldCharacter* NewOwningPawn)
 {
 	ActiveTrigger->SetActive(false);
+	ActiveTrigger->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SetOwner(NewOwningPawn);
 
 	GetRootComponent()->SetHiddenInGame(true, true);
 
 	NewOwningPawn->BindToItemsDummyNode(this);
 	GetRootComponent()->SetRelativeTransform(FTransform::Identity);
+
+	TouchedCharacter = nullptr;
 }
 
 void AInventoryItem::LeaveInventory(class AMMWorldCharacter* NewOwningPawn)
 {
 	ActiveTrigger->SetActive(true);
+	ActiveTrigger->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	SetOwner(nullptr);
 
 	GetRootComponent()->SetHiddenInGame(false, true);
@@ -52,4 +57,20 @@ void AInventoryItem::OnStartUse_Implementation()
 	{
 		TouchedCharacter->PickupItem(this);
 	}
+}
+
+void AInventoryItem::Equip()
+{
+	AMMWorldCharacter* MyPawn = Cast<AMMWorldCharacter>(GetOwner());
+	MyPawn->BindToEquipItemPoint(this);
+	OnEquip();
+}
+
+void AInventoryItem::Unequip()
+{
+	AMMWorldCharacter* MyPawn = Cast<AMMWorldCharacter>(GetOwner());
+	MyPawn->BindToItemsDummyNode(this);
+	GetRootComponent()->SetRelativeTransform(FTransform::Identity);
+
+	OnUnequip();
 }
