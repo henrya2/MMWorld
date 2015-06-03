@@ -17,7 +17,10 @@ public:
 	void EnterInventory(class AMMWorldCharacter* NewOwningPawn);
 	void LeaveInventory(class AMMWorldCharacter* NewOwningPawn);
 
-	bool IsInInventory() const { return false; }
+	virtual void OnEnterInventory(class AMMWorldCharacter* NewOwningPawn) {}
+	virtual void OnLeaveInventory(class AMMWorldCharacter* NewOwningPawn) {}
+
+	bool IsInInventory() const { return bInInventory; }
 
 	const FString& GetItemName() const { return ItemName; }
 
@@ -48,5 +51,8 @@ protected:
 	UBoxComponent* PickupTrigger;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool bCanBeEquiped;
+	uint32 bCanBeEquiped : 1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	uint32 bInInventory : 1;
 };

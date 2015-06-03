@@ -4,12 +4,12 @@
 #include "InventoryItem.h"
 #include "MMWorldCharacter.h"
 
-// Sets default values
 AInventoryItem::AInventoryItem()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bCanBeEquiped = false;
+	bInInventory = false;
 }
 
 // Called when the game starts or when spawned
@@ -38,6 +38,8 @@ void AInventoryItem::EnterInventory(class AMMWorldCharacter* NewOwningPawn)
 	GetRootComponent()->SetRelativeTransform(FTransform::Identity);
 
 	TouchedCharacter = nullptr;
+
+	bInInventory = true;
 }
 
 void AInventoryItem::LeaveInventory(class AMMWorldCharacter* NewOwningPawn)
@@ -49,6 +51,8 @@ void AInventoryItem::LeaveInventory(class AMMWorldCharacter* NewOwningPawn)
 	GetRootComponent()->SetHiddenInGame(false, true);
 
 	NewOwningPawn->UnbindToItemsDummyNode(this);
+
+	bInInventory = false;
 }
 
 void AInventoryItem::OnStartUse_Implementation()
