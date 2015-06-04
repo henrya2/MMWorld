@@ -2,15 +2,30 @@
 
 #include "MMWorld.h"
 #include "MeleeWeapon.h"
+#include "MMWorldCharacter.h"
 
 AMeleeWeapon::AMeleeWeapon()
 {
 	bCanBeEquiped = true;
+
+	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
+	Mesh->AttachParent = GetRootComponent();
+
+	AttackAnimation = nullptr;
+}
+
+FTransform AMeleeWeapon::GetHandBindPointTransform() const
+{
+	return Mesh->GetSocketTransform(TEXT("HandBindPoint"), RTS_Component);
 }
 
 void AMeleeWeapon::OnStartPrimaryAction()
 {
-
+	AMMWorldCharacter* PlayerCharacter = Cast<AMMWorldCharacter>(GetOwner());
+	if (PlayerCharacter && AttackAnimation)
+	{
+		PlayerCharacter->PlayAnimMontage(AttackAnimation);
+	}
 }
 
 void AMeleeWeapon::OnStopPrimaryAction()

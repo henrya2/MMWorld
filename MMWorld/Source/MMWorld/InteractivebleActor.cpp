@@ -13,6 +13,7 @@ AInteractivebleActor::AInteractivebleActor()
 
 	ActiveTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("ActiveTrigger"));
 	ActiveTrigger->AttachParent = RootComponent;
+	ActiveTrigger->bVisible = false;
 
 	bTrackedByCharcter = false;
 	TouchedCharacter = nullptr;

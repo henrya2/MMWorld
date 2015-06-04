@@ -42,6 +42,9 @@ public:
 
 	void BindToEquipItemPoint(class AInventoryItem* InventoryItem);
 
+	float PlayAnimMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
+	void StopAnimMontage(class UAnimMontage* AnimMontage = nullptr);
+
 protected:
 	void ToggleThirdPerson();
 

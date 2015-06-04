@@ -12,6 +12,11 @@ AInventoryItem::AInventoryItem()
 	bInInventory = false;
 }
 
+FTransform AInventoryItem::GetHandBindPointTransform() const
+{
+	return FTransform::Identity;
+}
+
 // Called when the game starts or when spawned
 void AInventoryItem::BeginPlay()
 {
@@ -65,8 +70,13 @@ void AInventoryItem::OnStartUse_Implementation()
 
 void AInventoryItem::Equip()
 {
+	if (!bCanBeEquiped)
+		return;
+
+	GetRootComponent()->DetachFromParent();
 	AMMWorldCharacter* MyPawn = Cast<AMMWorldCharacter>(GetOwner());
 	MyPawn->BindToEquipItemPoint(this);
+	GetRootComponent()->SetHiddenInGame(false, true);
 	OnEquip();
 }
 
@@ -75,6 +85,7 @@ void AInventoryItem::Unequip()
 	AMMWorldCharacter* MyPawn = Cast<AMMWorldCharacter>(GetOwner());
 	MyPawn->BindToItemsDummyNode(this);
 	GetRootComponent()->SetRelativeTransform(FTransform::Identity);
+	GetRootComponent()->SetHiddenInGame(true, false);
 
 	OnUnequip();
 }

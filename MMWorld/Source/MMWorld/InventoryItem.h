@@ -21,8 +21,11 @@ public:
 	virtual void OnLeaveInventory(class AMMWorldCharacter* NewOwningPawn) {}
 
 	bool IsInInventory() const { return bInInventory; }
+	bool CanBeEquiped() const { return bCanBeEquiped; }
 
 	const FString& GetItemName() const { return ItemName; }
+
+	virtual FTransform GetHandBindPointTransform() const;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

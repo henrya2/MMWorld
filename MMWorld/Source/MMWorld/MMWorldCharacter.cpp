@@ -203,22 +203,34 @@ void AMMWorldCharacter::OnStopUse()
 
 void AMMWorldCharacter::OnStartPrimaryAction()
 {
-
+	if (EquipedItem.IsValid())
+	{
+		EquipedItem->OnStartPrimaryAction();
+	}
 }
 
 void AMMWorldCharacter::OnStopPrimaryAction()
 {
-
+	if (EquipedItem.IsValid())
+	{
+		EquipedItem->OnStopPrimaryAction();
+	}
 }
 
 void AMMWorldCharacter::OnStartSecondaryAction()
 {
-
+	if (EquipedItem.IsValid())
+	{
+		EquipedItem->OnStartSecondaryAction();
+	}
 }
 
 void AMMWorldCharacter::OnStopSecondaryAction()
 {
-
+	if (EquipedItem.IsValid())
+	{
+		EquipedItem->OnStopSecondaryAction();
+	}
 }
 
 void AMMWorldCharacter::MoveForward(float Value)
@@ -300,6 +312,8 @@ void AMMWorldCharacter::EquipItem(class AInventoryItem* InventoryItem)
 		}
 
 		InventoryItem->Equip();
+
+		EquipedItem = InventoryItem;
 	}
 }
 
@@ -314,6 +328,31 @@ void AMMWorldCharacter::UnequipItem(class AInventoryItem* InventoryItem)
 void AMMWorldCharacter::BindToEquipItemPoint(class AInventoryItem* InventoryItem)
 {
 	InventoryItem->AttachRootComponentTo(GetMesh(), TEXT("ItemHoldPointRight"));
+	FTransform HandBindPointTransform = InventoryItem->GetHandBindPointTransform();
+	FTransform CorrectTransform = HandBindPointTransform.Inverse();
+	InventoryItem->GetRootComponent()->SetRelativeRotation(CorrectTransform.GetRotation().Rotator());
+	InventoryItem->GetRootComponent()->SetRelativeLocation(CorrectTransform.GetLocation());
+}
+
+float AMMWorldCharacter::PlayAnimMontage(class UAnimMontage* AnimMontage, float InPlayRate /*= 1.f*/, FName StartSectionName /*= NAME_None*/)
+{
+	USkeletalMeshComponent* UseMesh = GetMesh();
+	if (AnimMontage && UseMesh && UseMesh->AnimScriptInstance)
+	{
+		return UseMesh->AnimScriptInstance->Montage_Play(AnimMontage, InPlayRate);
+	}
+
+	return 0.0f;
+}
+
+void AMMWorldCharacter::StopAnimMontage(class UAnimMontage* AnimMontage /*= nullptr*/)
+{
+	USkeletalMeshComponent* UseMesh = GetMesh();
+	if (AnimMontage && UseMesh && UseMesh->AnimScriptInstance &&
+		UseMesh->AnimScriptInstance->Montage_IsPlaying(AnimMontage))
+	{
+		UseMesh->AnimScriptInstance->Montage_Stop(AnimMontage->BlendOutTime);
+	}
 }
 
 void AMMWorldCharacter::BeginPlay()
