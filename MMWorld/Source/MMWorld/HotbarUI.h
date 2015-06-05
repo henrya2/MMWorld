@@ -3,22 +3,17 @@
 #pragma once
 
 #include "Blueprint/UserWidget.h"
-#include "GameHUDUI.generated.h"
-
-class UHotbarUI;
+#include "HotbarUI.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MMWORLD_API UGameHUDUI : public UUserWidget
+class MMWORLD_API UHotbarUI : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	UGameHUDUI();
+	UHotbarUI();
 
 	virtual void OnWidgetRebuilt() override;
-
-protected:
-	UHotbarUI* HotBarWidget;
 };
