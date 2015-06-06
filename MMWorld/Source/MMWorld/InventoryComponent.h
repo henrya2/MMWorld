@@ -26,13 +26,22 @@ public:
 
 public:
 	const TArray<TWeakObjectPtr<class AInventoryItem>>& GetInventoryItems() { return InventoryItems; }
+
 	TArray<FHotbarInfoItem>& GetHotbarItems() { return HotbarItems; }
+
 	class AInventoryItem* GetEquipedItem(EHotbarItemType HotbarItemType);
 
+	int32 GetActiveHotbarItemIndex() const { return ActiveHotbarItemIndex; }
+	void ActivateHotbarIndex(int32 Index);
+
+	void ChangeHotbarItem(int32 HotbarItemIndex, class AInventoryItem* InventoryItem, EHotbarItemType HotbarItemType);
+
 	void EquipItem(class AInventoryItem* InventoryItem, EHotbarItemType HotbarItemType);
+
 	void UnEquipItem(class AInventoryItem* InventoryItem);
 
 	void PutItemIntoInventory(class AInventoryItem* InventoryItem);
+
 	void RemoveAnItemInInventory(class AInventoryItem* InventoryItem);
 
 protected:
@@ -50,4 +59,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<FHotbarInfoItem> HotbarItems;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int32 ActiveHotbarItemIndex;
 };

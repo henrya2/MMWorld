@@ -17,6 +17,7 @@ UInventoryComponent::UInventoryComponent()
 	EquipedSecondaryItem = nullptr;
 
 	HotbarItems.SetNum(HOTBAR_ITEMS_NUM);
+	ActiveHotbarItemIndex = 0;
 }
 
 
@@ -50,6 +51,31 @@ class AInventoryItem* UInventoryComponent::GetEquipedItem(EHotbarItemType Hotbar
 	}
 
 	return nullptr;
+}
+
+void UInventoryComponent::ActivateHotbarIndex(int32 Index)
+{
+	check(Index >= 0 && Index <= HOTBAR_ITEMS_NUM);
+
+	if (ActiveHotbarItemIndex != Index)
+	{
+		ActiveHotbarItemIndex = Index;
+		if (HotbarItems[Index].MainItem.IsValid())
+		{
+			EquipItem(HotbarItems[Index].MainItem.Get(), EHotbarItemType::Main);
+		}
+		if (HotbarItems[Index].SecondaryItem.IsValid())
+		{
+			EquipItem(HotbarItems[Index].SecondaryItem.Get(), EHotbarItemType::Secondary);
+		}
+	}
+}
+
+void UInventoryComponent::ChangeHotbarItem(int32 HotbarItemIndex, class AInventoryItem* InventoryItem, EHotbarItemType HotbarItemType)
+{
+	check(HotbarItemIndex >= 0 && HotbarItemIndex <= HOTBAR_ITEMS_NUM);
+
+	HotbarItems[HotbarItemIndex].ChangeItem(InventoryItem, HotbarItemType);
 }
 
 void UInventoryComponent::EquipItem(class AInventoryItem* InventoryItem, EHotbarItemType HotbarItemType)

@@ -20,7 +20,14 @@ void FHotbarInfoItem::ChangeSecondaryItem(class AInventoryItem* NewSecondaryItem
 	ChangeItem(NewSecondaryItem, EHotbarItemType::Secondary);
 }
 
-void FHotbarInfoItem::ChangeItem(class AInventoryItem* NewMainItem, EHotbarItemType HotbarItemType)
+void FHotbarInfoItem::ChangeItem(class AInventoryItem* NewItem, EHotbarItemType HotbarItemType)
 {
-
+	if (HotbarItemType == EHotbarItemType::Main)
+	{
+		MainItem = NewItem;
+	}
+	else if (HotbarItemType == EHotbarItemType::Secondary)
+	{
+		SecondaryItem = NewItem;
+	}
 }
