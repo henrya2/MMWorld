@@ -4,6 +4,7 @@
 #define __MMWORLD_H__
 
 #include "Engine.h"
+#include "MMWorldCommons.h"
 
 
 #endif

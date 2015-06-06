@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ItemConstants.generated.h"
+#include "MMWorldCommons.generated.h"
 
 UENUM()
 enum class EMiscItemType : uint8
@@ -15,3 +15,12 @@ enum class EEquipItemType : uint8
 	Weapon,
 	Shield,
 };
+
+UENUM()
+enum class EHotbarItemType : uint8
+{
+	Main,
+	Secondary,
+};
+
+#define HOTBAR_ITEMS_NUM 4

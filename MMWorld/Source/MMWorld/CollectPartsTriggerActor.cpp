@@ -30,7 +30,7 @@ void ACollectPartsTriggerActor::OnStartUse_Implementation()
 					if (NeedCollectParts[i].PartItemType == Inventory[j]->GetClass())
 					{
 						NeedCollectParts[i].bCollected = true;
-						TouchedCharacter->LeaveAnItemInInventory(Inventory[j].Get());
+						TouchedCharacter->DropAnItemInInventory(Inventory[j].Get());
 						Inventory[j]->Destroy();
 					}
 				}

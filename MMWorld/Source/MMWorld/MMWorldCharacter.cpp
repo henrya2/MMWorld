@@ -1,7 +1,9 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 
 #include "MMWorld.h"
+#include "HotBarInfoItem.h"
 #include "MMWorldCharacter.h"
+#include "InventoryComponent.h"
 #include "InteractivebleActor.h"
 #include "InventoryItem.h"
 #include "InventoryUI.h"
@@ -55,6 +57,8 @@ AMMWorldCharacter::AMMWorldCharacter(const FObjectInitializer& ObjectInitializer
 	ItemsDummyNode = CreateDefaultSubobject<USceneComponent>(TEXT("ItemsDummyNode"));
 	ItemsDummyNode->AttachParent = RootComponent;
 
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>(TEXT("InventoryComponent"));
+
 	PrimaryActorTick.bCanEverTick = true;
 
 	bIsFirstPersonPerspective = true;
@@ -62,9 +66,9 @@ AMMWorldCharacter::AMMWorldCharacter(const FObjectInitializer& ObjectInitializer
 	InventoryUIClass = nullptr;
 	InventoryUI = nullptr;
 
-	EquipedItem = nullptr;
-
 	bInGameUIMode = false;
+
+	//HotbarItems.SetNum(HOTBAR_ITEMS_NUM);
 }
 
 void AMMWorldCharacter::PostInitializeComponents()
@@ -203,33 +207,33 @@ void AMMWorldCharacter::OnStopUse()
 
 void AMMWorldCharacter::OnStartPrimaryAction()
 {
-	if (EquipedItem.IsValid())
+	if (InventoryComponent->GetEquipedItem(EHotbarItemType::Main))
 	{
-		EquipedItem->OnStartPrimaryAction();
+		InventoryComponent->GetEquipedItem(EHotbarItemType::Main)->OnStartPrimaryAction();
 	}
 }
 
 void AMMWorldCharacter::OnStopPrimaryAction()
 {
-	if (EquipedItem.IsValid())
+	if (InventoryComponent->GetEquipedItem(EHotbarItemType::Main))
 	{
-		EquipedItem->OnStopPrimaryAction();
+		InventoryComponent->GetEquipedItem(EHotbarItemType::Main)->OnStopPrimaryAction();
 	}
 }
 
 void AMMWorldCharacter::OnStartSecondaryAction()
 {
-	if (EquipedItem.IsValid())
+	if (InventoryComponent->GetEquipedItem(EHotbarItemType::Secondary))
 	{
-		EquipedItem->OnStartSecondaryAction();
+		InventoryComponent->GetEquipedItem(EHotbarItemType::Secondary)->OnStartSecondaryAction();
 	}
 }
 
 void AMMWorldCharacter::OnStopSecondaryAction()
 {
-	if (EquipedItem.IsValid())
+	if (InventoryComponent->GetEquipedItem(EHotbarItemType::Secondary))
 	{
-		EquipedItem->OnStopSecondaryAction();
+		InventoryComponent->GetEquipedItem(EHotbarItemType::Secondary)->OnStopSecondaryAction();
 	}
 }
 
@@ -277,19 +281,24 @@ void AMMWorldCharacter::PickupItem(class AInventoryItem* InventoryItem)
 
 void AMMWorldCharacter::PutItemIntoInventory(class AInventoryItem* InventoryItem)
 {
-	InventoryItems.Add(InventoryItem);
+	InventoryComponent->PutItemIntoInventory(InventoryItem);
 }
 
 void AMMWorldCharacter::RemoveAnItemInInventory(class AInventoryItem* InventoryItem)
 {
 
-	InventoryItems.Remove(InventoryItem);
+	InventoryComponent->RemoveAnItemInInventory(InventoryItem);
 }
 
-void AMMWorldCharacter::LeaveAnItemInInventory(class AInventoryItem* InventoryItem)
+void AMMWorldCharacter::DropAnItemInInventory(class AInventoryItem* InventoryItem)
 {
 	InventoryItem->LeaveInventory(this);
 	RemoveAnItemInInventory(InventoryItem);
+}
+
+const TArray<TWeakObjectPtr<class AInventoryItem>>& AMMWorldCharacter::GetInventoryItems()
+{
+	return InventoryComponent->GetInventoryItems();
 }
 
 void AMMWorldCharacter::BindToItemsDummyNode(class AInventoryItem* InventoryItem)
@@ -304,25 +313,12 @@ void AMMWorldCharacter::UnbindToItemsDummyNode(class AInventoryItem* InventoryIt
 
 void AMMWorldCharacter::EquipItem(class AInventoryItem* InventoryItem)
 {
-	if (EquipedItem != InventoryItem)
-	{
-		if (EquipedItem.IsValid())
-		{
-			EquipedItem->Unequip();
-		}
-
-		InventoryItem->Equip();
-
-		EquipedItem = InventoryItem;
-	}
+	InventoryComponent->EquipItem(InventoryItem, EHotbarItemType::Main);
 }
 
 void AMMWorldCharacter::UnequipItem(class AInventoryItem* InventoryItem)
 {
-	if (InventoryItem == EquipedItem.Get())
-	{
-		InventoryItem->Unequip();
-	}
+	InventoryComponent->UnEquipItem(InventoryItem);
 }
 
 void AMMWorldCharacter::BindToEquipItemPoint(class AInventoryItem* InventoryItem)

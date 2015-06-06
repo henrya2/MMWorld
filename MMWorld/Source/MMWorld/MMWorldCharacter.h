@@ -1,9 +1,11 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 #pragma once
 #include "GameFramework/Character.h"
+#include "MMWorldCommons.h"
 #include "MMWorldCharacter.generated.h"
 
 class UInputComponent;
+class UInventoryComponent;
 
 UCLASS(config=Game)
 class MMWORLD_API AMMWorldCharacter : public ACharacter
@@ -29,9 +31,9 @@ public:
 	void PickupItem(class AInventoryItem* InventoryItem);
 	void PutItemIntoInventory(class AInventoryItem* InventoryItem);
 	void RemoveAnItemInInventory(class AInventoryItem* InventoryItem);
-	void LeaveAnItemInInventory(class AInventoryItem* InventoryItem);
+	void DropAnItemInInventory(class AInventoryItem* InventoryItem);
 
-	const TArray<TWeakObjectPtr<class AInventoryItem>>& GetInventoryItems() { return InventoryItems; }
+	const TArray<TWeakObjectPtr<class AInventoryItem>>& GetInventoryItems();
 
 	USceneComponent* GetItemsDummyNode() const { return ItemsDummyNode; }
 	void BindToItemsDummyNode(class AInventoryItem* InventoryItem);
@@ -44,6 +46,8 @@ public:
 
 	float PlayAnimMontage(class UAnimMontage* AnimMontage, float InPlayRate = 1.f, FName StartSectionName = NAME_None);
 	void StopAnimMontage(class UAnimMontage* AnimMontage = nullptr);
+
+	UInventoryComponent* GetInventoryComponent() { return InventoryComponent; }
 
 protected:
 	void ToggleThirdPerson();
@@ -126,10 +130,7 @@ protected:
 	TWeakObjectPtr<class AInteractivebleActor> ActiveInteractivebleActor;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory)
-	TArray<TWeakObjectPtr<class AInventoryItem>> InventoryItems;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Inventory)
-	TWeakObjectPtr<class AInventoryItem> EquipedItem;
+	UInventoryComponent* InventoryComponent;
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Inventory)

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "InventoryItem.h"
-#include "ItemConstants.h"
+#include "MMWorldCommons.h"
 #include "MiscItem.generated.h"
 
 UCLASS()
