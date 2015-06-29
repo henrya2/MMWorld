@@ -324,10 +324,6 @@ void AMMWorldCharacter::UnequipItem(class AInventoryItem* InventoryItem)
 void AMMWorldCharacter::BindToEquipItemPoint(class AInventoryItem* InventoryItem)
 {
 	InventoryItem->AttachRootComponentTo(GetMesh(), TEXT("ItemHoldPointRight"));
-	FTransform HandBindPointTransform = InventoryItem->GetHandBindPointTransform();
-	FTransform CorrectTransform = HandBindPointTransform.Inverse();
-	InventoryItem->GetRootComponent()->SetRelativeRotation(CorrectTransform.GetRotation().Rotator());
-	InventoryItem->GetRootComponent()->SetRelativeLocation(CorrectTransform.GetLocation());
 }
 
 float AMMWorldCharacter::PlayAnimMontage(class UAnimMontage* AnimMontage, float InPlayRate /*= 1.f*/, FName StartSectionName /*= NAME_None*/)
